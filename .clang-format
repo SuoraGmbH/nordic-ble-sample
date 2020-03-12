@@ -1,0 +1,16 @@
+---
+BasedOnStyle: WebKit
+AlignAfterOpenBracket: Align
+AllowShortFunctionsOnASingleLine: Empty
+AlwaysBreakTemplateDeclarations: true
+BraceWrapping:
+    AfterFunction: false
+    SplitEmptyFunction: false
+BreakBeforeBraces: Custom
+BreakBeforeBinaryOperators: None
+ColumnLimit: 120
+Cpp11BracedListStyle: true
+IndentPPDirectives: AfterHash
+PointerAlignment: Right
+SpaceBeforeCpp11BracedList: false
+---
