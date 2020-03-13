@@ -21,10 +21,6 @@ namespace {
 NRF_BLE_GATT_DEF(gatt_instance);
 BLE_ADVERTISING_DEF(advertising_instance);
 
-std::uint32_t read_counter = 0;
-
-std::array<std::uint8_t, 4> write_buffer = {};
-
 void abort_on_error(ret_code_t error_code) {
     APP_ERROR_HANDLER(error_code);
 }
@@ -49,6 +45,10 @@ void advertising_event_handler(ble_adv_evt_t event) {
         break;
     }
 }
+
+std::uint32_t read_counter = 0;
+
+std::array<std::uint8_t, 4> write_buffer = {};
 
 void peer_manager_event_handler(const pm_evt_t *event) {
     ret_code_t errorCode;
@@ -156,6 +156,8 @@ void ble_event_handler(const ble_evt_t *event, void *) {
         break;
     }
 }
+
+NRF_SDH_BLE_OBSERVER(ble_observer, 2, &ble_event_handler, nullptr);
 }
 
 int main() {
@@ -187,8 +189,6 @@ int main() {
 
     error_code = nrf_sdh_ble_enable(&application_ram_start_address);
     APP_ERROR_CHECK(error_code);
-
-    NRF_SDH_BLE_OBSERVER(ble_observer, 2, &ble_event_handler, nullptr);
 
     error_code = nrf_ble_gatt_init(&gatt_instance, nullptr);
     APP_ERROR_CHECK(error_code);
