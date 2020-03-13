@@ -163,6 +163,7 @@ NRF_SDH_BLE_OBSERVER(ble_observer, 2, &ble_event_handler, nullptr);
 int main() {
     ret_code_t error_code;
 
+    // common init
     error_code = NRF_LOG_INIT(nullptr);
     APP_ERROR_CHECK(error_code);
 
@@ -183,6 +184,7 @@ int main() {
     error_code = bsp_init(BSP_INIT_LEDS, nullptr);
     APP_ERROR_CHECK(error_code);
 
+    // enable the SoftDevice
     std::uint32_t application_ram_start_address;
     error_code = nrf_sdh_ble_default_cfg_set(1, &application_ram_start_address);
     APP_ERROR_CHECK(error_code);
@@ -190,12 +192,13 @@ int main() {
     error_code = nrf_sdh_ble_enable(&application_ram_start_address);
     APP_ERROR_CHECK(error_code);
 
+    // initialize gatt
     error_code = nrf_ble_gatt_init(&gatt_instance, nullptr);
     APP_ERROR_CHECK(error_code);
 
-    // Define the UUIDs
-    // 95c2xxxx-0b95-40e0-a903-7b8e1be9a64b
+    // define UUIDs
     ble_uuid128_t base_uuid_data{
+        // 95c2xxxx-0b95-40e0-a903-7b8e1be9a64b
         {0x95, 0xc2, 0x00, 0x00, 0x0b, 0x95, 0x40, 0xe0, 0xa9, 0x03, 0x7b, 0x8e, 0x1b, 0xe9, 0xa6, 0x4b}};
     std::uint8_t base_uuid_type;
     error_code = sd_ble_uuid_vs_add(&base_uuid_data, &base_uuid_type);
@@ -213,12 +216,12 @@ int main() {
     write_characteristic_uuid.type = base_uuid_type;
     write_characteristic_uuid.uuid = 2;
 
-    // Add the service
+    // register service
     std::uint16_t service_handle;
     error_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &service_uuid, &service_handle);
     APP_ERROR_CHECK(error_code);
 
-    // Add the read characteristic
+    // register read characteristic
     ble_gatts_char_md_t read_characteristic_metadata;
     memset(&read_characteristic_metadata, 0, sizeof(read_characteristic_metadata));
     read_characteristic_metadata.char_props.read = 1;
@@ -244,7 +247,7 @@ int main() {
                                                  &read_characteristic_handle);
     APP_ERROR_CHECK(error_code);
 
-    // Add the write characteristic
+    // register write characteristic
     ble_gatts_char_md_t write_characteristic_metadata;
     memset(&write_characteristic_metadata, 0, sizeof(write_characteristic_metadata));
     write_characteristic_metadata.char_props.write = 1;
@@ -270,15 +273,18 @@ int main() {
                                                  &write_characteristic_handle);
     APP_ERROR_CHECK(error_code);
 
+    // set device name
     ble_gap_conn_sec_mode_t security_mode;
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&security_mode);
     auto device_name = to_array_without_null("BLE Sample 01");
     error_code = sd_ble_gap_device_name_set(&security_mode, device_name.data(), device_name.size());
     APP_ERROR_CHECK(error_code);
 
+    // set device name
     error_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_GENERIC_WATCH);
     APP_ERROR_CHECK(error_code);
 
+    // set the preferred connection parameters
     ble_gap_conn_params_t gap_connection_parameters;
     memset(&gap_connection_parameters, 0, sizeof(gap_connection_parameters));
     gap_connection_parameters.conn_sup_timeout = MSEC_TO_UNITS(4000, UNIT_10_MS);
@@ -289,6 +295,7 @@ int main() {
     error_code = sd_ble_gap_ppcp_set(&gap_connection_parameters);
     APP_ERROR_CHECK(error_code);
 
+    // initialize advertising
     ble_advertising_init_t advertising_init_data;
     memset(&advertising_init_data, 0, sizeof(advertising_init_data));
 
@@ -304,6 +311,7 @@ int main() {
     advertising_init_data.config.ble_adv_slow_timeout = 0;
     advertising_init_data.config.ble_adv_slow_interval = MSEC_TO_UNITS(500u, UNIT_0_625_MS);
 
+    // add the service UUID
     auto service_uuids = std::array<ble_uuid_t, 1>{service_uuid};
     advertising_init_data.srdata.uuids_complete.p_uuids = service_uuids.data();
     advertising_init_data.srdata.uuids_complete.uuid_cnt = service_uuids.size();
@@ -316,6 +324,7 @@ int main() {
     error_code = ble_advertising_start(&advertising_instance, BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(error_code);
 
+    // initialize peer manager
     error_code = pm_init();
     APP_ERROR_CHECK(error_code);
 

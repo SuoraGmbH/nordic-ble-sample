@@ -9,6 +9,7 @@
 int main() {
     ret_code_t error_code;
 
+    // common init
     error_code = NRF_LOG_INIT(nullptr);
     APP_ERROR_CHECK(error_code);
 
@@ -32,6 +33,7 @@ int main() {
     error_code = bsp_indication_set(BSP_INDICATE_ALERT_1);
     APP_ERROR_CHECK(error_code);
 
+    // main loop
     NRF_LOG_INFO("Starting the main loop");
     while (true) {
         if (!NRF_LOG_PROCESS()) {

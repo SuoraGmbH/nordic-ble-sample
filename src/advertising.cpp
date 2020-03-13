@@ -48,6 +48,7 @@ void advertising_event_handler(ble_adv_evt_t event) {
 int main() {
     ret_code_t error_code;
 
+    // common init
     error_code = NRF_LOG_INIT(nullptr);
     APP_ERROR_CHECK(error_code);
 
@@ -68,6 +69,7 @@ int main() {
     error_code = bsp_init(BSP_INIT_LEDS, nullptr);
     APP_ERROR_CHECK(error_code);
 
+    // enable the SoftDevice
     uint32_t application_ram_start_address;
     error_code = nrf_sdh_ble_default_cfg_set(1, &application_ram_start_address);
     APP_ERROR_CHECK(error_code);
@@ -75,18 +77,22 @@ int main() {
     error_code = nrf_sdh_ble_enable(&application_ram_start_address);
     APP_ERROR_CHECK(error_code);
 
+    // initialize gatt
     error_code = nrf_ble_gatt_init(&bleGattInstance, nullptr);
     APP_ERROR_CHECK(error_code);
 
+    // set device name
     ble_gap_conn_sec_mode_t security_mode;
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&security_mode);
     auto device_name = to_array_without_null("BLE Sample 01");
     error_code = sd_ble_gap_device_name_set(&security_mode, device_name.data(), device_name.size());
     APP_ERROR_CHECK(error_code);
 
+    // set the appearance (icon)
     error_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_GENERIC_WATCH);
     APP_ERROR_CHECK(error_code);
 
+    // set the preferred connection parameters
     ble_gap_conn_params_t gapConnectionParameters;
     memset(&gapConnectionParameters, 0, sizeof(gapConnectionParameters));
     gapConnectionParameters.conn_sup_timeout = MSEC_TO_UNITS(4000, UNIT_10_MS);
@@ -97,6 +103,7 @@ int main() {
     error_code = sd_ble_gap_ppcp_set(&gapConnectionParameters);
     APP_ERROR_CHECK(error_code);
 
+    // initialize advertising
     ble_advertising_init_t advertisingInitData;
     memset(&advertisingInitData, 0, sizeof(advertisingInitData));
 
@@ -120,6 +127,7 @@ int main() {
     error_code = ble_advertising_start(&bleAdvertisingInstance, BLE_ADV_MODE_FAST);
     APP_ERROR_CHECK(error_code);
 
+    // main loop
     NRF_LOG_INFO("Starting the main loop");
     while (true) {
         if (!NRF_LOG_PROCESS()) {
