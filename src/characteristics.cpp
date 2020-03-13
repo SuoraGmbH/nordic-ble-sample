@@ -25,7 +25,7 @@ std::uint32_t read_counter = 0;
 
 std::array<std::uint8_t, 4> write_buffer = {};
 
-void error_handler(ret_code_t error_code) {
+void abort_on_error(ret_code_t error_code) {
     APP_ERROR_HANDLER(error_code);
 }
 
@@ -296,7 +296,7 @@ int main() {
     advertising_init_data.advdata.flags = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE;
     advertising_init_data.advdata.include_ble_device_addr = true;
     advertising_init_data.evt_handler = &advertising_event_handler;
-    advertising_init_data.error_handler = &error_handler;
+    advertising_init_data.error_handler = &abort_on_error;
     advertising_init_data.config.ble_adv_fast_enabled = true;
     advertising_init_data.config.ble_adv_fast_timeout = 60;
     advertising_init_data.config.ble_adv_fast_interval = MSEC_TO_UNITS(200u, UNIT_0_625_MS);

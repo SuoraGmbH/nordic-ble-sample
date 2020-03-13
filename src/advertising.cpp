@@ -19,7 +19,7 @@ namespace {
 NRF_BLE_GATT_DEF(bleGattInstance);
 BLE_ADVERTISING_DEF(bleAdvertisingInstance);
 
-void advertising_error_handler(ret_code_t error_code) {
+void abort_on_error(ret_code_t error_code) {
     APP_ERROR_HANDLER(error_code);
 }
 
@@ -104,7 +104,7 @@ int main() {
     advertisingInitData.advdata.flags = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE;
     advertisingInitData.advdata.include_ble_device_addr = true;
     advertisingInitData.evt_handler = &advertising_event_handler;
-    advertisingInitData.error_handler = &advertising_error_handler;
+    advertisingInitData.error_handler = &abort_on_error;
     advertisingInitData.config.ble_adv_fast_enabled = true;
     advertisingInitData.config.ble_adv_fast_timeout = 60;
     advertisingInitData.config.ble_adv_fast_interval = MSEC_TO_UNITS(200u, UNIT_0_625_MS);
