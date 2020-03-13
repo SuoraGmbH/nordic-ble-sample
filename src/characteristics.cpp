@@ -210,8 +210,8 @@ int main() {
     read_characteristic_uuid.uuid = 1;
 
     ble_uuid_t write_characteristic_uuid;
-    read_characteristic_uuid.type = base_uuid_type;
-    read_characteristic_uuid.uuid = 2;
+    write_characteristic_uuid.type = base_uuid_type;
+    write_characteristic_uuid.uuid = 2;
 
     // Add the service
     std::uint16_t service_handle;
