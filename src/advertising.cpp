@@ -75,6 +75,9 @@ int main() {
     error_code = nrf_sdh_ble_enable(&application_ram_start_address);
     APP_ERROR_CHECK(error_code);
 
+    error_code = nrf_ble_gatt_init(&bleGattInstance, nullptr);
+    APP_ERROR_CHECK(error_code);
+
     ble_gap_conn_sec_mode_t security_mode;
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&security_mode);
     auto device_name = to_array_without_null("BLE Sample 01");
@@ -92,9 +95,6 @@ int main() {
     gapConnectionParameters.slave_latency = 0;
 
     error_code = sd_ble_gap_ppcp_set(&gapConnectionParameters);
-    APP_ERROR_CHECK(error_code);
-
-    error_code = nrf_ble_gatt_init(&bleGattInstance, nullptr);
     APP_ERROR_CHECK(error_code);
 
     ble_advertising_init_t advertisingInitData;
