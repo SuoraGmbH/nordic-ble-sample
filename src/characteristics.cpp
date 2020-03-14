@@ -204,14 +204,17 @@ int main() {
     error_code = sd_ble_uuid_vs_add(&base_uuid_data, &base_uuid_type);
     APP_ERROR_CHECK(error_code);
 
+    // 95c20000-0b95-40e0-a903-7b8e1be9a64b
     ble_uuid_t service_uuid;
     service_uuid.type = base_uuid_type;
     service_uuid.uuid = 0;
 
+    // 95c20001-0b95-40e0-a903-7b8e1be9a64b
     ble_uuid_t read_characteristic_uuid;
     read_characteristic_uuid.type = base_uuid_type;
     read_characteristic_uuid.uuid = 1;
 
+    // 95c20002-0b95-40e0-a903-7b8e1be9a64b
     ble_uuid_t write_characteristic_uuid;
     write_characteristic_uuid.type = base_uuid_type;
     write_characteristic_uuid.uuid = 2;
@@ -280,7 +283,7 @@ int main() {
     error_code = sd_ble_gap_device_name_set(&security_mode, device_name.data(), device_name.size());
     APP_ERROR_CHECK(error_code);
 
-    // set device name
+    // set appearance
     error_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_GENERIC_WATCH);
     APP_ERROR_CHECK(error_code);
 
