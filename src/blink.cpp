@@ -30,6 +30,7 @@ int main() {
     error_code = bsp_init(BSP_INIT_LEDS, nullptr);
     APP_ERROR_CHECK(error_code);
 
+    // blink
     error_code = bsp_indication_set(BSP_INDICATE_ALERT_1);
     APP_ERROR_CHECK(error_code);
 
