@@ -148,5 +148,4 @@ target_compile_options(
 
 target_link_libraries(
     nrf5_sdk PUBLIC
-    -Wl,--no-whole-archive
     "${CMAKE_CURRENT_SOURCE_DIR}/nRF5_SDK/external/nrf_cc310/lib/cortex-m4/hard-float/libnrf_cc310_0.9.12.a")
